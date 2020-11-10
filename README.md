@@ -1,1 +1,1 @@
-# unifac
+# UNIFAC Group Contribution Method
