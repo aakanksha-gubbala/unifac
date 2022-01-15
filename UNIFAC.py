@@ -3,40 +3,33 @@ import numpy as np
 
 class UNIFAC:
     def __init__(self):
-        self.x = np.array([[0.2, 0.8]])
+        self.x = np.array([[0.2, 0.8]]) # mol fractions
         self.T = np.array([[330]])  # K
+        # Frequency of UNIFAC groups : each row denotes the subgroup and each column denotes the component
         self.nu = np.array([[2, 0],
                             [2, 0],
                             [1, 0],
                             [0, 1]])
+        # R values
         self.R = np.array([0.9011, 0.6744, 1.6764, 3.1680])
+        # Q values
         self.Q = np.array([0.8480, 0.5400, 1.4200, 2.4840])
+        # a_mn values (energy contributions in residual)
         self.a = np.array([[0.0000, 0.0000, 232.10, 354.55],
                            [0.0000, 0.0000, 232.10, 354.55],
                            [114.80, 114.80, 0.0000, 202.30],
                            [-25.31, -25.31, -146.3, 0.0000]])
         self.r = np.matmul(self.R, self.nu)
         self.q = np.matmul(self.Q, self.nu)
-        # self.nu = np.array([[0, 1, 1],
-        #                     [0, 0, 3],
-        #                     [0, 0, 1],
-        #                     [0, 1, 0],
-        #                     [1, 0, 0]])
-        # self.R = np.array([0.9011, 0.6744, 1.9031, 1.3013, 0.92])
-        # self.Q = np.array([0.8480, 0.5400, 1.7280, 1.2240, 1.40])
-        # self.a = np.array([[0, 0, 232.1, 663.5, 1318],
-        #                    [0, 0, 232.1, 663.5, 1318],
-        #                    [114.8, 114.8, 0, 660.2, 200.8],
-        #                    [315.3, 315.3, -256.3, 0, -66.17],
-        #                    [300, 300, 72.87, -14.09, 0]])
-        # self.r = np.matmul(self.R, self.nu)
-        # self.q = np.matmul(self.Q, self.nu)
 
     def get_gammaC(self):
+        # Get the combinatorial part of activity coefficient
+        # J = ri / sum(rj xj)
         J = np.zeros((len(self.x), len(self.x[0])))
         for i in range(len(self.x)):
             J[i] = self.r / np.dot(self.x[i], self.r)
-
+        
+        # L = qi / sum(qj xj)
         L = np.zeros((len(self.x), len(self.x[0])))
         for i in range(len(self.x)):
             L[i] = self.q / np.dot(self.x[i], self.q)
@@ -45,6 +38,7 @@ class UNIFAC:
         return np.exp(lngammaC)
 
     def get_gammaR(self):
+        # Get the residual part of activity coefficient
         e = np.zeros(self.nu.transpose().shape)
         for i in range(e.shape[0]):
             e[i] = self.nu.transpose()[i] * self.Q / self.q[i]
@@ -67,6 +61,7 @@ class UNIFAC:
         return np.exp(lngammaR)
 
     def get_gamma(self):
+        # Get the activity coefficent
         gammaC = self.get_gammaC()
         gammaR = self.get_gammaR()
         return gammaC * gammaR
