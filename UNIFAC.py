@@ -1,8 +1,9 @@
 import numpy as np
 
+#### Get nomenclature from Introduction to Chemical Engineering Thermodynamics by Joseph Mauk Smith, Hendrick C. Van Ness, Michael M. Abbott, Mark Thomas Swihart 
 
 class UNIFAC:
-    def __init__(self):
+    def __init__(self):    
         self.x = np.array([[0.2, 0.8]]) # mol fractions
         self.T = np.array([[330]])  # K
         # Frequency of UNIFAC groups : each row denotes the subgroup and each column denotes the component
